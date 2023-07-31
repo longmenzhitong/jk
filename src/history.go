@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -137,6 +138,16 @@ func History(count int) error {
 		buildUrls = append(buildUrls, buildUrl)
 	}
 
+	param, err := GetParam(true)
+	if err != nil {
+		return err
+	}
+	paramKeys := make([]string, 0)
+	for k := range param.BuildParams {
+		paramKeys = append(paramKeys, k)
+	}
+	sort.Strings(paramKeys)
+
 	// 访问Build信息URL获取Build信息
 	rows := make([]table.Row, 0)
 	for _, buildUrl := range buildUrls {
@@ -147,16 +158,19 @@ func History(count int) error {
 
 		row := table.Row{
 			SimplifyTime(time.Unix(build.Timestamp/1000, 0).Format(LayoutDateTime)),
-			build.getPrameterValue(buildActionParameterNameDeployEnv),
-			build.getPrameterValue(buildActionParameterNameServerName),
-			build.getPrameterValue(buildActionParameterNameBuildBranch),
 			build.getResult(),
 			build.getCauseUser(),
+		}
+		for _, k := range paramKeys {
+			row = append(row, build.getPrameterValue(k))
 		}
 		rows = append(rows, row)
 	}
 
-	title := table.Row{"Time", "Env", "Server", "Branch", "Result", "User"}
+	title := table.Row{"Time", "Result", "User"}
+	for _, k := range paramKeys {
+		title = append(title, k)
+	}
 	PrintTable(&title, rows)
 	return nil
 }
