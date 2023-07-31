@@ -35,7 +35,7 @@ var historyCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(historyCmd)
+	RootCmd.AddCommand(historyCmd)
 
 	historyCmd.Flags().IntVarP(&historyCount, "count", "c", 5, "History count")
 }
