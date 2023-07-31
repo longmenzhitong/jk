@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"sort"
 	"time"
 
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -61,11 +60,8 @@ type BuildActionCause struct {
 }
 
 const (
-	buildActionClassParameter           = "hudson.model.ParametersAction"
-	buildActionClassCuase               = "hudson.model.CauseAction"
-	buildActionParameterNameBuildBranch = "BUILD_BRANCH"
-	buildActionParameterNameDeployEnv   = "DEPLOYENV"
-	buildActionParameterNameServerName  = "SERVERNAME"
+	buildActionClassParameter = "hudson.model.ParametersAction"
+	buildActionClassCuase     = "hudson.model.CauseAction"
 )
 
 func (b *Build) getPrameterValue(parameterName string) string {
@@ -138,17 +134,8 @@ func History(count int) error {
 		buildUrls = append(buildUrls, buildUrl)
 	}
 
-	param, err := GetParam(true)
-	if err != nil {
-		return err
-	}
-	paramKeys := make([]string, 0)
-	for k := range param.BuildParams {
-		paramKeys = append(paramKeys, k)
-	}
-	sort.Strings(paramKeys)
-
 	// 访问Build信息URL获取Build信息
+	paramKeys := p.getSortedParamKeys()
 	rows := make([]table.Row, 0)
 	for _, buildUrl := range buildUrls {
 		build, err := getBuild(buildUrl)

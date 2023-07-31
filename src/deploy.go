@@ -53,10 +53,10 @@ func checkParam() (*param, error) {
 	}
 
 	rows = append(rows, table.Row{"JOB", p.Job})
-	for k, v := range p.BuildParams {
-		rows = append(rows, table.Row{k, v})
+	paramKeys := p.getSortedParamKeys()
+	for _, k := range paramKeys {
+		rows = append(rows, table.Row{k, p.BuildParams[k]})
 	}
-
 	PrintTable(nil, rows)
 
 	PrintDoneMsg("Check done.\n")

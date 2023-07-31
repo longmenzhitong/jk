@@ -3,6 +3,7 @@ package jk
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -58,6 +59,15 @@ func (p *param) checkBuildParams() error {
 	}
 
 	return nil
+}
+
+func (p *param) getSortedParamKeys() []string {
+	paramKeys := make([]string, 0)
+	for k := range p.BuildParams {
+		paramKeys = append(paramKeys, k)
+	}
+	sort.Strings(paramKeys)
+	return paramKeys
 }
 
 func GetParam(build bool) (*param, error) {
