@@ -5,11 +5,13 @@ import (
 	"os"
 	"strings"
 
+	"github.com/AlecAivazis/survey/v2"
 	"gopkg.in/yaml.v3"
 )
 
 const paramFileName = ".jenkins_param.yml"
 const templateValPrefix = "$"
+const optionValSeparator = "|"
 
 type param struct {
 	Job         string            `yaml:"job"`
@@ -45,6 +47,8 @@ func (p *param) checkBuildParams() error {
 			v, err = askParamValue(k)
 		} else if strings.HasPrefix(v, templateValPrefix) {
 			v, err = getTemplateValue(v)
+		} else if strings.Contains(v, optionValSeparator) {
+			v = askOptionVal(k, v)
 		}
 		if err != nil {
 			return err
@@ -124,4 +128,14 @@ func getTemplateValue(templateKey string) (string, error) {
 	}
 
 	return v, nil
+}
+
+func askOptionVal(paramKey, paramVal string) string {
+	var v string
+	prompt := &survey.Select{
+		Message: fmt.Sprintf("Please choose a %s:", paramKey),
+		Options: strings.Split(paramVal, optionValSeparator),
+	}
+	survey.AskOne(prompt, &v)
+	return v
 }
