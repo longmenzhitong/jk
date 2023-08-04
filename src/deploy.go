@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/jedib0t/go-pretty/v6/table"
 )
 
@@ -79,9 +80,12 @@ func Deploy() error {
 	fmt.Println()
 
 	// 确认构建
-	fmt.Println("Sure to deploy? [y/n]")
-	input := strings.ToLower(ReadString())
-	if input != "y" {
+	var sure bool
+	prompt := &survey.Confirm{
+		Message: "Sure to build?",
+	}
+	survey.AskOne(prompt, &sure)
+	if !sure {
 		return &CancelledError{}
 	}
 
