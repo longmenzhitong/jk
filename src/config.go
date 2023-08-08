@@ -22,6 +22,7 @@ type config struct {
 		Password              string `yaml:"password"`
 		PrintStatus           bool   `yaml:"printStatus"`
 		PollingIntervalSecond int    `yaml:"pollingIntervalSecond"`
+		FastBuild             bool   `yaml:"fastBuild"`
 	} `yaml:"jenkins"`
 }
 

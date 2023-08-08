@@ -80,13 +80,15 @@ func Deploy() error {
 	fmt.Println()
 
 	// 确认构建
-	var sure bool
-	prompt := &survey.Confirm{
-		Message: "Sure to build?",
-	}
-	survey.AskOne(prompt, &sure)
-	if !sure {
-		return &CancelledError{}
+	if !Config.Jenkins.FastBuild {
+		var sure bool
+		prompt := &survey.Confirm{
+			Message: "Sure to build?",
+		}
+		survey.AskOne(prompt, &sure)
+		if !sure {
+			return &CancelledError{}
+		}
 	}
 
 	// 发起构建
