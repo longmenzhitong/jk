@@ -15,8 +15,9 @@ const templateValPrefix = "$"
 const optionValSeparator = "|"
 
 type param struct {
-	Job         string            `yaml:"job"`
-	BuildParams map[string]string `yaml:"buildParams"`
+	Job            string            `yaml:"job"`
+	CheckHealthUrl string            `yaml:"checkHealthUrl"`
+	BuildParams    map[string]string `yaml:"buildParams"`
 }
 
 func (p *param) checkJob() error {

@@ -2,7 +2,6 @@ package jk
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/schollz/progressbar/v3"
 )
@@ -70,7 +69,7 @@ func Status() error {
 		if len(succeed) == stageCount {
 			break
 		}
-		time.Sleep(time.Duration(Config.Jenkins.PollingIntervalSecond) * time.Second)
+		sleep()
 	}
 	return nil
 }

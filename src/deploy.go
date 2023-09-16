@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -109,6 +108,10 @@ func Deploy() error {
 		if err != nil {
 			return err
 		}
+
+		if p.CheckHealthUrl != "" {
+			waitRestart(p.CheckHealthUrl)
+		}
 	} else {
 		fmt.Printf("To check the progress, please visit: %s", getJenkinsUrl(p.Job))
 	}
@@ -158,6 +161,25 @@ func waitDeploy(job string) error {
 				return nil
 			}
 		}
-		time.Sleep(time.Duration(Config.Jenkins.PollingIntervalSecond) * time.Second)
+		sleep()
 	}
+}
+
+func waitRestart(checkHealthUrl string) error {
+	fmt.Println("Wait restart...")
+	for {
+		req, err := http.NewRequest("GET", checkHealthUrl, nil)
+		if err != nil {
+			return err
+		}
+
+		client := &http.Client{}
+		_, err = client.Do(req)
+		if err == nil {
+			break
+		}
+
+		sleep()
+	}
+	return nil
 }

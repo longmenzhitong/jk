@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type LastBuild struct {
@@ -51,4 +52,8 @@ func boolToSymbol(b bool) string {
 		return "✅"
 	}
 	return "❌"
+}
+
+func sleep() {
+	time.Sleep(time.Duration(Config.Jenkins.PollingIntervalSecond) * time.Second)
 }
